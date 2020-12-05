@@ -6,6 +6,7 @@ import json
 # ProblemList
 # ProblelmDetail
 
+
 class ProblemList(View):
     def get(self, request, *args, **kwargs):
         problems = Problem.objects.all()
@@ -13,10 +14,7 @@ class ProblemList(View):
 
         for p in problems:
             if p.contestcount == 0:
-                data.append({
-                    'code': p.code,
-                    'name': p.name
-                })
+                data.append(p.detail(forlist=True))
 
         return HttpResponse(json.dumps({'problems': data}), content_type="application/json")
 
@@ -24,22 +22,18 @@ class ProblemList(View):
 class ProblemDetails(View):
 
     def get(self, request, *args, **kwargs):
-        problem = Problem.objects.filter(code=kwargs.get('code'))
+        problem = Problem.objects.filter(code=kwargs.get('problemcode'))
 
         data = {}
-    
+
         if problem.count() == 1:
             problem = problem.first()
             data = {
-                'problem': {
-                    'code':problem.code,
-                    'name': problem.name,
-                    'description': problem.description
-                }
+                'problem': problem.detail()
             }
         else:
             data = {
                 'error': 'problem code invalid'
-                }
-        
-        return HttpResponse(json.dumps(data),content_type="application/json")
+            }
+
+        return HttpResponse(json.dumps(data), content_type="application/json")
