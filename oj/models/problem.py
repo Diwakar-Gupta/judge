@@ -7,7 +7,7 @@ class Problem(models.Model):
         max_length=20, verbose_name='problem code', help_text='at max 20 characters')
     name = models.CharField(
         max_length=50, verbose_name='problem name', help_text='at max 20 characters')
-    description = models.TextField(verbose_name='problem body')
+    description = models.TextField(verbose_name='problem body', help_text='problem statement in html form u can use bootstrap for styling say .text-muted')
     author = models.ForeignKey(
         Profile, on_delete=models.DO_NOTHING, related_name='problemauthor', default=None)
     curators = models.ManyToManyField(Profile, verbose_name='curator', blank=True, related_name='problemcurators',
@@ -31,3 +31,6 @@ class Problem(models.Model):
 
     def detail(self, forlist=False):
         return {'code': self.code, 'name': self.name} if forlist else {'code': self.code, 'name': self.name, 'description': self.description}
+
+    def __str__(self) -> str :
+        return self.name+' ['+self.code+']'

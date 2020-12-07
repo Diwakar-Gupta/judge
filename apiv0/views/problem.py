@@ -37,3 +37,7 @@ class ProblemDetails(View):
             }
 
         return HttpResponse(json.dumps(data), content_type="application/json")
+
+    def post(self, request, *args, **kwargs):
+        # handle code submission
+        pass

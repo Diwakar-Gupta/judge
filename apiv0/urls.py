@@ -1,7 +1,6 @@
 from django.urls import path, include
 from .views.problem import ProblemDetails, ProblemList
-from .views.courses import CourseList, CourseDetail
-from .views.course_sub_topics import CourseSubTopic
+from .views.course import CourseList, CourseDetail, CourseSubTopic, CourseProblems
 
 urlpatterns = [
     path('problems/', ProblemList.as_view()),
@@ -11,7 +10,7 @@ urlpatterns = [
         path('', CourseDetail.as_view()),
         path('/<str:course_sub_topic>', include([
             path('', CourseSubTopic.as_view()),
-            path('/<str:problemcode>', ProblemDetails.as_view())
+            path('/<str:problemcode>', CourseProblems.as_view())
         ]))
     ])),
 ]

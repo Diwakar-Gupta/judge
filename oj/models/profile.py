@@ -4,11 +4,12 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
-    
-
     class Meta:
         verbose_name = "Profile"
         verbose_name_plural = "Profiles"
+    
+    def __str__(self) -> str:
+        return self.user.username
 
     def calculate_points(self):
         return 10

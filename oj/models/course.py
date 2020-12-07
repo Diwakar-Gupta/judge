@@ -4,6 +4,7 @@ from oj.models.problem import Problem
 from oj.models.submission import Submission
 
 
+
 class Course_Sub_Topics(models.Model):
     name = models.CharField(max_length=30, unique=True)
     problems = models.ManyToManyField(Problem, blank=True)
@@ -12,7 +13,7 @@ class Course_Sub_Topics(models.Model):
         return self.name
 
     def detail(self, forlist=False):
-        data = {'name': self.name, 'key': self.id}
+        data = {'name': self.name, 'id': self.id}
         
         if forlist:
             return data
@@ -70,7 +71,11 @@ class Course(models.Model):
         return desc
 
 
+class Course_Profile(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, db_index=True)
 
 class Course_Submissions(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, db_index=True)
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Course_Profile, on_delete=models.CASCADE, db_index=True)
