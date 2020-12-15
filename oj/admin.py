@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.db.models import fields
 from oj.models.problem import Problem
 from oj.models.profile import Profile
-from oj.models.submission import Submission, SubmissionSource
+from oj.models.submission import Submission, SubmissionSource, SubmissionTestCase
 # from oj.models.organization import Organization, QrganizationJoinRequest
 from oj.models.runtime import Language, Judge
-from oj.models.course import Course_Topics, Course, Course_Submissions, Course_Sub_Topics
+from oj.models.course import Course_Topics, Course, Course_Submissions, Course_Sub_Topics, Course_Ordered_Problem
 # Register your models here.
 
 # class JudgeAdmin(admin.ModelAdmin):
@@ -23,3 +23,5 @@ admin.site.register(Course_Topics)
 admin.site.register(Course)
 admin.site.register(Course_Submissions)
 admin.site.register(Course_Sub_Topics)
+admin.site.register(Course_Ordered_Problem)
+admin.site.register(SubmissionTestCase)

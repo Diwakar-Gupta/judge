@@ -417,7 +417,7 @@ class JudgeHandler(ZlibPacketHandler):
         problem.update_stats()
         submission.update_contest()
 
-        finished_submission(submission)
+        # finished_submission(submission)
 
         # event.post('sub_%s' % submission.id_secret, {
         #     'type': 'grading-end',

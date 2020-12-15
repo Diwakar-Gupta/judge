@@ -1,3 +1,8 @@
 Django>=2.2,<3
 mysqlclient
 djangorestframework
+pymysql
+netaddr
+pyllist
+django-cors-headers
+google-auth

@@ -2,6 +2,7 @@ from django.db import models
 from oj.models.problem import Problem
 from oj.models.profile import Profile
 from oj.models.runtime import Judge, Language
+from oj.judgeapi import judge_submission
 
 SUBMISSION_RESULT = (
     ('AC', 'Accepted'),
@@ -70,10 +71,30 @@ class Submission(models.Model):
     current_testcase = models.IntegerField(default=0)
     error = models.TextField(verbose_name='compile errors', null=True, blank=True)
     is_pretested = models.BooleanField(verbose_name='was ran on pretests only', default=False)
+    batch = models.BooleanField(verbose_name='batched cases', default=False)
     judged_on = models.ForeignKey(Judge, verbose_name='judged on', null=True, blank=True,
                                   on_delete=models.SET_NULL)
     judged_date = models.DateTimeField(verbose_name='submission judge time', default=None, null=True)
+    is_locked = models.BooleanField(default=False)
+
+    def judge(self, *args, **kwargs):
+        if not self.is_locked:
+            return judge_submission(self, *args, **kwargs)
+        return False
     
+    def serilize(self):
+        data = {
+            'result' : self.result,
+            'status': self.status,
+            'time_taken': self.time_taken,
+            'points':self.points,
+            'language': self.language.common_name,
+            'case_points':self.case_points,
+            'current_testcase':self.current_testcase,
+            'compile_errors':self.error
+        }
+        return data
+
     def update_contest(self):
         pass
 

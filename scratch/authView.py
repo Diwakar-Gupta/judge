@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import HttpResponse
+from oj.models import Profile
 
 
 @api_view(['POST'])
@@ -47,6 +48,7 @@ def googleAuth(request):
                 first_name=first_name
             )
             user.save()
+            Profile(user=user).save()
         auth.login(request, user)
         return Response(idinfo)
     except ValueError:
@@ -83,9 +85,8 @@ def api_login(request):
     },status=status.HTTP_200_OK)
 
     return Response({
-        'username': '',
-        'is_anonymous': True
-    },status=status.HTTP_400_BAD_REQUEST)
+        'error':'wrong credentials'
+    })
 
 
 import json
@@ -99,11 +100,17 @@ def api_change_password(request):
 
     user = auth.authenticate(request, username=username, password=oldpassword)
 
-    if user == request.user:
+    if request.user != None and request.user.password == '':
+        user = request.user
+
+    if not user is None and (user == request.user):
         user.set_password(newpassword)
         user.save()
         return HttpResponse()
-    return HttpResponse()
+
+    
+
+    return HttpResponse(json.dumps({'error': 'wrong credentials'}))
     
 
 

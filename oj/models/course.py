@@ -4,10 +4,22 @@ from oj.models.problem import Problem
 from oj.models.submission import Submission
 
 
+class Course_Ordered_Problem(models.Model):
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    index = models.IntegerField(default=100)
+    is_public = models.BooleanField(default=False)
+
+    def detail(self, forlist=False):
+        data = {
+            'name': self.problem.name,
+            'code': self.problem.code
+        }
+        return data
+
 
 class Course_Sub_Topics(models.Model):
     name = models.CharField(max_length=30, unique=True)
-    problems = models.ManyToManyField(Problem, blank=True)
+    problems = models.ManyToManyField(Course_Ordered_Problem)
 
     def __str__(self) -> str:
         return self.name
@@ -21,6 +33,7 @@ class Course_Sub_Topics(models.Model):
         data['problems'] = [p.detail(forlist=True) for p in self.problems.all()]
 
         return data
+
 
 class Course_Topics(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -72,8 +85,10 @@ class Course(models.Model):
 
 
 class Course_Profile(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user = models.OneToOneField(Profile, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, db_index=True)
+    scores = models.IntegerField(default=0)
+
 
 class Course_Submissions(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, db_index=True)

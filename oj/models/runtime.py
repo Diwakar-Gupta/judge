@@ -21,6 +21,16 @@ class Language(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def detail(self, forlist=False):
+        desc = {'common_name': self.common_name,
+                'key': self.key}
+
+        if forlist:
+            return desc
+        
+        # desc['topics'] = [st.detail(forlist=True) for st in self.alltopics.all()]
+        return desc
 
 class RuntimeVersion(models.Model):
     language = models.ForeignKey(Language, verbose_name='language to which this runtime belongs', on_delete=models.CASCADE)
