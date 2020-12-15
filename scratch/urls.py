@@ -16,10 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from . import authView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
+    path('api-auth/', include([
+        path('whoami/', authView.whoami),
+        path('signin/', authView.api_login),
+        path('signout/', authView.api_logout),
+        path('changepassword/', authView.api_change_password)
+    ])),
+    path('socialauth/', include([
+        path('google/', authView.googleAuth)
+    ])),
     path('apiv0/', include('apiv0.urls')),
     path('', TemplateView.as_view(template_name='index.html')),
+    path('<path:resource>', TemplateView.as_view(template_name='index.html')),
 ]
