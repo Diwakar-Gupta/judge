@@ -18,8 +18,9 @@ class Course_Ordered_Problem(models.Model):
 
 
 class Course_Sub_Topics(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30)
     problems = models.ManyToManyField(Course_Ordered_Problem)
+    is_visible = models.BooleanField(default=False, help_text='publicly visible')
 
     def __str__(self) -> str:
         return self.name
@@ -36,8 +37,9 @@ class Course_Sub_Topics(models.Model):
 
 
 class Course_Topics(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30)
     subtopics = models.ManyToManyField(Course_Sub_Topics, blank=True)
+    is_visible = models.BooleanField(default=False, help_text='publicly visible')
 
     def __str__(self) -> str:
         return self.name
@@ -48,25 +50,26 @@ class Course_Topics(models.Model):
             'id': self.id,
         }
 
-        data['subtopics'] = [cst.detail(forlist=True) for cst in self.subtopics.all()]
+        data['subtopics'] = [cst.detail(forlist=True) for cst in self.subtopics.filter(is_visible=True).all()]
         return data
 
 class Course(models.Model):
     name = models.CharField(max_length=30, unique=True)
     organizers = models.ManyToManyField(
-        Profile, help_text='These people will be able to edit the contest')
+        Profile, help_text='These people will be able to edit the contest', related_name='organized_courses')
     description = models.TextField(help_text='Course Description', blank=True)
     is_visible = models.BooleanField(
         default=False, help_text='publicly visible')
     is_private = models.BooleanField(
         default=False, verbose_name='private to specific users')
     private_contestants = models.ManyToManyField(Profile, blank=True, verbose_name='private contestants',
-                                                 help_text='If private, only these users may see the contest', related_name='private_contestants+')
+                                                 help_text='If private, only these users may see the contest', related_name='courses')
     is_locked = models.BooleanField(
         verbose_name='contest lock', default=False, help_text='Prevent submissions for this contest')
     alltopics = models.ManyToManyField(
         Course_Topics, blank=True, help_text='Topic covered in this course')
     # hide_problem_tags = models.BooleanField(verbose_name='hide problem tags')
+    total_participantes = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return self.name
@@ -80,7 +83,7 @@ class Course(models.Model):
         if forlist:
             return desc
         
-        desc['topics'] = [st.detail(forlist=True) for st in self.alltopics.all()]
+        desc['topics'] = [st.detail(forlist=True) for st in self.alltopics.filter(is_visible=True).all()]
         return desc
 
 
@@ -89,8 +92,7 @@ class Course_Profile(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, db_index=True)
     scores = models.IntegerField(default=0)
 
-
 class Course_Submissions(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, db_index=True)
-    submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
+    submission = models.OneToOneField(Submission, on_delete=models.CASCADE)
     profile = models.ForeignKey(Course_Profile, on_delete=models.CASCADE, db_index=True)

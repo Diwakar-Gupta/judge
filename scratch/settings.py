@@ -27,7 +27,7 @@ SECRET_KEY = 'very less secure key'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# CSRF_COOKIE_NAME = "XSRF-TOKEN"
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,12 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
+    # 'rest_auth',
     'apiv0',
     'oj',
 ]
 
 MIDDLEWARE = [
+    # "django_samesite_none.middleware.SameSiteNoneMiddleware",
     'corsheaders.middleware.CorsMiddleware',
+    # 'django_cookies_samesite.middleware.CookiesSameSite',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # "django_samesite_none.middleware.SameSiteNoneMiddleware",
 ]
 
 ROOT_URLCONF = 'scratch.urls'
@@ -125,10 +130,15 @@ AUTH_PASSWORD_VALIDATORS = [
 #     ]
 # }
 
+
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ]
 }
 

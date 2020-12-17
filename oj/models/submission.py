@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.query_utils import subclasses
 from oj.models.problem import Problem
 from oj.models.profile import Profile
 from oj.models.runtime import Judge, Language
@@ -130,3 +131,21 @@ class SubmissionTestCase(models.Model):
         unique_together = ('submission', 'case')
         verbose_name = ('submission test case')
         verbose_name_plural = ('submission test cases')
+
+
+def pkgen():
+    import uuid
+    pk = ''
+    bad_pk = True
+    while bad_pk:
+        pk = str(uuid.uuid4())[0:8]
+        bad_pk = SubmissionCached.objects.filter(key=pk).exists()
+    return pk
+
+
+class SubmissionCached(models.Model):
+    submission = models.OneToOneField(Submission, on_delete=models.CASCADE)
+    key = models.CharField(max_length=8, primary_key = True, default = pkgen, editable = False) 
+
+    def get_serilized(self):
+        return subclasses.serilize()

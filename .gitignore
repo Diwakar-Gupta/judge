@@ -3,3 +3,7 @@
 */migrations/*
 */node_modules/*
 venv
+env/
+static/
+*.log
+*.pot

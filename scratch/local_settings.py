@@ -22,10 +22,25 @@ CORS_ORIGIN_WHITELIST = (
        'http://localhost:3000',
 )
 CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_SAMESITE=None
-SESSION_COOKIE_SAMESITE=None
+CSRF_COOKIE_SAMESITE=False
+SESSION_COOKIE_SAMESITE=False
+SESSION_COOKIE_SAMESITE = 'Strict'
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'WWW-Authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'X-Amz-Date',
+    'access-control-allow-origin'
+]
 
-# Optional apps that DMOJ can make use of.
+
 INSTALLED_APPS += (
     
 )
@@ -38,7 +53,7 @@ CACHES = {
     }
 }
 
-# Your database credentials. Only MySQL is supported by DMOJ.
+
 # Documentation: <https://docs.djangoproject.com/en/1.11/ref/databases/>
 DATABASES = {
      'default': {
@@ -106,7 +121,6 @@ USE_TZ = True
 #EMAIL_BACKEND = 'sgbackend.SendGridBackend'
 #SENDGRID_API_KEY = '<Your SendGrid API Key>'
 
-# The DMOJ site is able to notify administrators of errors via email,
 # if configured as shown below.
 
 # A tuple of (name, email) pairs that specifies those who will be mailed
@@ -116,7 +130,7 @@ ADMINS = (
 )
 
 # The sender for the aforementioned emails.
-SERVER_EMAIL = 'DMOJ: Modern Online Judge <errors@dmoj.ca>'
+# SERVER_EMAIL = 'Modern Online Judge'
 
 
 ##################################################
@@ -126,7 +140,6 @@ SERVER_EMAIL = 'DMOJ: Modern Online Judge <errors@dmoj.ca>'
 
 # Change this to somewhere more permanent., especially if you are using a 
 # webserver to serve the static files. This is the directory where all the 
-# static files DMOJ uses will be collected to.
 # You must configure your webserver to serve this directory as /static/ in production.
 STATIC_ROOT = 'static/'
 
@@ -137,14 +150,12 @@ STATIC_URL = '/static/'
 #STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
 
 ############################################
-########## DMOJ-specific settings ##########
 ############################################
 
-## DMOJ site display settings.
 SITE_NAME = 'Coder'
 SITE_LONG_NAME = 'Coder: Club'
 SITE_ADMIN_EMAIL = 'admin@example.com'
-TERMS_OF_SERVICE_URL = '//dmoj.ca/tos' # Use a flatpage.
+TERMS_OF_SERVICE_URL = ''
 
 ## Bridge controls.
 # The judge connection address and port; where the judges will connect to the site.
@@ -155,7 +166,6 @@ BRIDGED_JUDGE_ADDRESS = [('localhost', 9999)]
 # The bridged daemon bind address and port to communicate with the site.
 #BRIDGED_DJANGO_ADDRESS = [('localhost', 9998)]
 
-## DMOJ features.
 # Set to True to enable full-text searching for problems.
 ENABLE_FTS = False
 
@@ -165,7 +175,7 @@ BAD_MAIL_PROVIDERS = set()
 # The number of submissions that a staff user can rejudge at once without
 # requiring the permission 'Rejudge a lot of submissions'.
 # Uncomment to change the submission limit.
-#DMOJ_SUBMISSIONS_REJUDGE_LIMIT = 10
+#SUBMISSIONS_REJUDGE_LIMIT = 10
 
 ## Event server.
 # Uncomment to enable live updating.
@@ -189,7 +199,7 @@ EVENT_DAEMON_GET = 'ws://codeclub.com//event/'
 #EVENT_DAEMON_GET_SSL = 'wss://<your domain>/event/' # Optional
 EVENT_DAEMON_POLL = '/channels/'
 
-# If you would like to use the AMQP-based event server from <https://github.com/DMOJ/event-server>,
+# If you would like to use the AMQP-based event server from <https://github.com/*/event-server>,
 # uncomment this section instead. This is more involved, and recommended to be done
 # only after you have a working event server.
 #EVENT_DAEMON_AMQP = '<amqp:// URL to connect to, including username and password>'
@@ -211,52 +221,7 @@ SELECT2_CSS_URL = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.mi
 # Please try not to hotlink this poor site.
 TIMEZONE_MAP = 'http://naturalearth.springercarto.com/ne3_data/8192/textures/3_no_ice_clouds_8k.jpg'
 
-## Camo (https://github.com/atmos/camo) usage.
-#DMOJ_CAMO_URL = "<URL to your camo install>"
-#DMOJ_CAMO_KEY = "<The CAMO_KEY environmental variable you used>"
 
-# Domains to exclude from being camo'd.
-#DMOJ_CAMO_EXCLUDE = ("https://dmoj.ml", "https://dmoj.ca")
-
-# Set to True to use https when dealing with protocol-relative URLs.
-# See <http://www.paulirish.com/2010/the-protocol-relative-url/> for what they are.
-#DMOJ_CAMO_HTTPS = False
-
-# HTTPS level. Affects <link rel='canonical'> elements generated.
-# Set to 0 to make http URLs canonical.
-# Set to 1 to make the currently used protocol canonical.
-# Set to 2 to make https URLs canonical.
-#DMOJ_HTTPS = 0
-
-## PDF rendering settings.
-# Directory to cache the PDF.
-#DMOJ_PDF_PROBLEM_CACHE = '/home/dmoj-uwsgi/pdfcache'
-
-# Path to use for nginx's X-Accel-Redirect feature.
-# Should be an internal location mapped to the above directory.
-#DMOJ_PDF_PROBLEM_INTERNAL = '/pdfcache'
-
-# Enable Selenium PDF generation
-#USE_SELENIUM = True
-
-## Data download settings.
-# Uncomment to allow users to download their data
-#DMOJ_USER_DATA_DOWNLOAD = True
-
-# Directory to cache user data downloads.
-# It is the administrator's responsibility to clean up old files.
-#DMOJ_USER_DATA_CACHE = '/home/dmoj-uwsgi/datacache'
-
-# Path to use for nginx's X-Accel-Redirect feature.
-# Should be an internal location mapped to the above directory.
-#DMOJ_USER_DATA_INTERNAL = '/datacache'
-# How often a user can download their data.
-#DMOJ_USER_DATA_DOWNLOAD_RATELIMIT = datetime.timedelta(days=1)
-
-
-## ======== Logging Settings ========
-# Documentation: https://docs.djangoproject.com/en/1.9/ref/settings/#logging
-#                https://docs.python.org/2/library/logging.config.html#logging-config-dictschema
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -314,8 +279,8 @@ LOGGING = {
 ## Python Social Auth
 # Documentation: https://python-social-auth.readthedocs.io/en/latest/
 # You can define these to enable authentication through the following services.
-SOCIAL_AUTH_GOOGLE_OAUTH2_CLIENT_ID = '742082810734-7jh66acflh9rpibdopf5fd1l7rl68jut.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'N7pfoUn2WFoZj-Q0tJV0vOyh'
+SOCIAL_AUTH_GOOGLE_OAUTH2_CLIENT_ID = '*'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 #SOCIAL_AUTH_FACEBOOK_KEY = ''
 #SOCIAL_AUTH_FACEBOOK_SECRET = ''
 #SOCIAL_AUTH_GITHUB_SECURE_KEY = ''
